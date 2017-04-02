@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/bevy.min.css" />
 	<link rel="icon" type="image/png" href="assets/img/favicon-32x32.png" sizes="32x32">
 	<link rel="icon" type="image/png" href="assets/img/favicon-16x16.png" sizes="16x16">
+	<script src="assets/js/app.js"></script>
 </head>
 <body>
 
@@ -284,31 +285,6 @@
 		</symbol>
 
 	</svg>
-
-	<script>
-
-	function handleProductData(data){
-		productData = JSON.parse(data);
-	}
-
-	function httpGetAsync(url, callback)
-	{
-		var xmlHttp = new XMLHttpRequest();
-		xmlHttp.onreadystatechange = function() { 
-			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-				callback(xmlHttp.responseText);
-		}
-		xmlHttp.open("GET", url, true); // true for asynchronous 
-		xmlHttp.send(null);
-	}
-
-	function overlay() {
-		el = document.getElementsByClassName("overlay")[0];
-		el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
-	}
-
-	httpGetAsync("https://morgan-test-2.myshopify.com/collections/all-products/products.json?page=1", handleProductData);
-	</script>
 
 </body>
 </html>
