@@ -19,13 +19,16 @@ function httpGetAsync(url, callback)
 
 function overlay() {
 	el = document.getElementsByClassName("overlay")[0];
-	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+	if(el.style.display == "none" || el.style.display == ""){
+		el.style.display = "block";
+		setTimeout(function(){
+			el.style.opacity = (el.style.opacity == 0) ? "1" : "0";
+		}, 200);
+	}
+	else{
+		el.style.opacity = (el.style.opacity == 0) ? "1" : "0";
+		setTimeout(function(){
+			el.style.display = (el.style.display == "block") ? "none" : "block";
+		}, 300);
+	}
 }
-
-document.querySelector(".overlay__inner")[0].addEventListener("click", function(event){
-	event.stopPropagation();
-});
-
-document.querySelector(".overlay")[0].addEventListener("click", function(event){
-	overlay();
-});
