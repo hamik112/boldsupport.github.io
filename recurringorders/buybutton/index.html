@@ -288,7 +288,7 @@
 	<script>
 
 	function handleProductData(data){
-		productData = data;
+		productData = JSON.parse(data);
 	}
 
 	function httpGetAsync(url, callback)
