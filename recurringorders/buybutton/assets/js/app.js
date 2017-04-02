@@ -22,16 +22,10 @@ function overlay() {
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
 }
 
-document.attachEvent("onreadystatechange", function(){
-	if (document.readyState === "complete"){
+document.querySelector(".overlay__inner")[0].addEventListener("click", function(event){
+	event.stopPropagation();
+});
 
-		document.querySelector(".overlay__inner")[0].addEventListener("click", function(event){
-			event.stopPropagation();
-		});
-
-		document.querySelector(".overlay")[0].addEventListener("click", function(event){
-			overlay();
-		});
-
-	}
+document.querySelector(".overlay")[0].addEventListener("click", function(event){
+	overlay();
 });
