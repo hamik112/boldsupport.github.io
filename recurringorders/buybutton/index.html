@@ -48,19 +48,49 @@
 				</div>
 
 				<div class="card-section">
-					<h2>Subscription Details</h2>
+					<h2><svg class="boldicon" id="complete-1"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#boldicon-check-circle-cutout"></use></svg><span id="progress-1">Step 1:</span> Select a Product</h2>
 					<div class="grid">
 						<div class="column field">
 							<label for="fn" class="field-label">Select the product the customer is subscribing to and we will give you a Buy Button for each of its' variants that are part of a subscription group.</label><br/>
-							<button type="button" class="btn" onclick="overlay('overlay')" style="margin-top:10px">Select Product</button>
-						</div>
-						<div class="column half field">
-							<label for="em" class="field-label"></label>
+							<button type="button" id="select-prod" class="btn" onclick="overlay('overlay')" style="margin-top:10px">Select Product</button>
 						</div>
 					</div>
 				</div>
 
-				<div class="card-section">
+				<div class="card-section variant-select fade">
+					<div class="grid">
+						<div class="column half field">
+							<h2><svg class="boldicon" id="complete-2"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#boldicon-check-circle-cutout"></use></svg><span id="progress-2">Step 2:</span> Select a Variant</h2>
+							<div class="field">
+							  <label class="field-label">Choose a variant from the list</label>
+							  <select id="variant-id" class="select-field"></select>
+							</div>
+							<button type="button" id="select-variant" class="btn fade" onclick="fetchSubscriptionDetails()">Continue</button>
+						</div>
+						<div class="column half field">
+							<div class="product-card no-border-bottom">
+								<img src="http://citsacademy.com/img/std01.jpg" id="product-image-display" height="50">
+								<div class="product-info-container">
+									<div class="one-half text-left product-card-container">
+										<label class="field-label pointer" id="product-title-display"></label>
+										<label class="field-label pointer" id="variant-title-display"></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-section subscription-details fade">
+					<h2><svg class="boldicon" id="complete-3"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#boldicon-check-circle-cutout"></use></svg><span id="progress-3">Step 3:</span> Subscription Details</h2>
+					<div class="field">
+					<!--
+					  <label class="field-label">Choose a variant from the list</label>
+					  <select id="variant-id" class="select-field"></select>-->
+					</div>
+				</div>
+
+				<div class="card-section terms">
 					<div class="field toggle-field">
 						<label>
 							<input type="checkbox" name="toc" id="" value="yes"> I agree to the terms and conditions
@@ -70,7 +100,7 @@
 					</div>
 				</div>
 
-				<div class="card-section actions">
+				<div class="card-section actions get-codes">
 					<button class="btn btn-primary">Get Codes</button>
 				</div>
 
@@ -114,7 +144,7 @@
 				<div class="one-half text-left product-card-container">
 					<label class="field-label">{{product_title}}</label>
 				</div><div class="one-half text-right product-card-container">
-					<button type="button" class="btn"><svg class="boldicon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#boldicon-gear"></use></svg></button>
+					<button type="button" class="btn" data-product-id="{{product_id}}" onclick="useProduct(this)"><svg class="boldicon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#boldicon-gear"></use></svg></button>
 				</div>
 			</div>
 		</div>

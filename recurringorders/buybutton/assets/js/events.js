@@ -25,3 +25,14 @@ document.querySelector(".btn-go-shopify").addEventListener("click", function(eve
 		alert("Please enter a valid myshopify domain found in the URL of your Shopify admin.");
 	}
 });
+
+document.querySelector('#variant-id').addEventListener('change', function(){
+
+	active_variant_id = this.value;
+	active_variant_title = this.options[this.selectedIndex].innerHTML;
+	document.getElementById('variant-title-display').innerHTML = active_variant_title;
+	overlayHide('subscription-details', function(){
+		document.getElementById('select-variant').style.display = 'block';
+	});
+
+});
