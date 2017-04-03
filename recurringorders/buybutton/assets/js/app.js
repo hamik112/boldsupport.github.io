@@ -1,5 +1,4 @@
 function handleProductData(data){
-	console.log(JSON.parse(data));
 	productData = JSON.parse(data);
 }
 
@@ -29,6 +28,18 @@ function triggerChange(element){
 	}
 }
 
+function loadWidget(c) {
+  var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+  o.src = "https://ro.boldapps.net/recurring_settings/generate_rp?&shop_url=" + myshopify_domain + "&group_id=" + active_group_id + "&product_id=" + active_product_id + "&variant_id=" + active_variant_id + "&v=2";
+  if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+  var product_form = document.getElementById('product-form');
+  var rp_div = product_form.querySelector('.product_rp_div');
+  rp_div.className += " p" + active_product_id;
+  rp_div.insertBefore(o, rp_div.firstChild);
+}
+
 function useProduct(product_el){
 	var product_id = product_el.dataset.productId;
 	var product_title = productData[product_id].title;
@@ -45,11 +56,33 @@ function useProduct(product_el){
 	displayProductVariants(product_id);
 	overlay('overlay', function(){
 		overlayShow('variant-select', function(){
-			overlayHide('subscription-details', function(){
-				document.getElementById('select-variant').style.display = 'block';
+			backToStep2();
+		});
+	});
+}
+
+function backToStep2(){
+	document.getElementById('select-variant').style.display = 'block';
+	document.getElementById('finalize').style.display = 'block';
+	overlayHide('subscription-details', function(){
+		overlayHide('terms', function(){
+			overlayHide('get-codes', function(){
 			});
 		});
 	});
+}
+
+function finalize(){
+
+	document.getElementById('progress-3').style.display = 'none';
+	document.getElementById('complete-3').style.display = 'inline-block';
+	document.getElementById('finalize').style.display = 'none';
+	overlay('terms', function(){
+		overlay('get-codes', function(){
+
+		});
+	});
+
 }
 
 function fetchSubscriptionDetails(){
@@ -58,7 +91,43 @@ function fetchSubscriptionDetails(){
 	document.getElementById('complete-2').style.display = 'inline-block';
 	document.getElementById('select-variant').style.display = 'none';
 
-	overlay('subscription-details');
+	overlayShow('subscription-details');
+	loadWidget(function(){
+		
+		var rp_div = document.querySelector('.product_rp_div.p' + active_product_id);
+		var frequency_num_el = rp_div.querySelector('.frequency_num');
+		var frequency_type_el = rp_div.querySelector('.frequency_type');
+		var frequency_num_display_el = document.getElementById('frequency_num');
+		var frequency_type_display_el = document.getElementById('frequency_type');
+
+		if(frequency_num_el.tagName.toLowerCase() == 'input'){
+			frequency_num_display_el.innerHTML = '<option value="' + frequency_num_el.value + '">' + frequency_num_el.value + '</option>';
+		}else{
+			var options = [].slice.call(frequency_num_el.children);
+			frequency_num_display_el.innerHTML = "";
+			options.forEach(function(option, index){
+				var o = document.createElement('option');
+				o.value = option.value;
+				o.innerHTML = option.innerHTML;
+				frequency_num_display_el.appendChild(o);
+			});
+		}
+
+		if(frequency_type_el.tagName.toLowerCase() == 'input'){
+			var freq_lang = ['Day(s)', 'Week(s)', 'Month(s)', 'Year(s)'];
+			frequency_type_display_el.innerHTML = '<option value="' + parseInt(frequency_type_el.value) + '">' + freq_lang[parseInt(frequency_type_el.value)] + '</option>';
+		}else{
+			var options = [].slice.call(frequency_type_el.children);
+			frequency_type_display_el.innerHTML = "";
+			options.forEach(function(option, index){
+				var o = document.createElement('option');
+				o.value = option.value;
+				o.innerHTML = option.innerHTML;
+				frequency_type_display_el.appendChild(o);
+			});
+		}
+
+	});
 
 }
 
@@ -86,6 +155,27 @@ function displayProductVariants(product_id){
 
 }
 
+function displayPreviousPage(){
+	if(current_page>1){
+		current_page--;
+		displayProductCards(current_page);
+	}
+}
+
+function displayNextPage(){
+	if((current_page+1)<=last_page){
+		current_page++;
+		displayProductCards(current_page);
+	}
+}
+
+function getCode(){
+	var frequency_num = document.getElementById('frequency_num').value;
+	var frequency_type = document.getElementById('frequency_type').value;
+	var code = "https://" + myshopify_domain + "/pages/quick-subscribe?p=" + active_product_id + "&v=" + active_variant_id + "&g=" + active_group_id + "&fn=" + frequency_num + "&ft=" + frequency_type;
+	alert('Your subscribe link is: ' + code);
+}
+
 function displayProductCards(page){
 
 	document.querySelector('.product-cards').innerHTML = "";
@@ -105,6 +195,8 @@ function displayProductCards(page){
 		new_element.innerHTML = new_card_html;
 		new_element.dataset.productId = product_id;
 
+		updateCurrentPage();
+
 		product_card_el.appendChild(new_element);
 	}
 
@@ -119,53 +211,55 @@ function getProductDataFromPage(callback){
 
 function overlayShow(elementClass, callback){
 	el = document.getElementsByClassName(elementClass)[0];
-	if(isHidden(el)){
-		el.style.display = "block";
-		setTimeout(function(){
-			el.style.opacity = "1";
-		}, 200);
+	el.style.display = "block";
+	el.style.opacity = "1";
+	if(typeof(callback) == 'function'){
+		callback();
 	}
-	setTimeout(function(){
-		if(typeof(callback) == 'function'){
-			callback();
-		}
-	}, 400);
+}
+
+function updateCurrentPage(){
+	var elements = [].slice.call(document.getElementsByClassName('page-num'));
+	elements.forEach(function(el, index){
+
+		el.innerHTML = current_page;
+
+	});
 }
 
 function overlayHide(elementClass, callback){
 	el = document.getElementsByClassName(elementClass)[0];
 
 	el.style.opacity = "0";
-	setTimeout(function(){
-		el.style.display = "none";
-	}, 300);
+	el.style.display = "none";
 
-	setTimeout(function(){
-		if(typeof(callback) == 'function'){
-			callback();
-		}
-	}, 400);
+	if(typeof(callback) == 'function'){
+		callback();
+	}
 }
 
 function overlay(elementClass, callback) {
-	el = document.getElementsByClassName(elementClass)[0];
-	if(isHidden(el)){
-		el.style.display = "block";
-		setTimeout(function(){
-			el.style.opacity = "1";
-		}, 200);
-	}
-	else{
-		el.style.opacity = "0";
-		setTimeout(function(){
-			el.style.display = "none";
-		}, 300);
-	}
+	elements = [].slice.call(document.getElementsByClassName(elementClass));
+	elements.forEach(function(el, index){
+		if(isHidden(el)){
+			el.style.display = "block";
+			setTimeout(function(){
+				el.style.opacity = "1";
+			}, 200);
+		}
+		else{
+			el.style.opacity = "0";
+			setTimeout(function(){
+				el.style.display = "none";
+			}, 300);
+		}
+	});
 	setTimeout(function(){
 		if(typeof(callback) == 'function'){
 			callback();
 		}
 	}, 400);
+
 }
 
 function isHidden(el) {

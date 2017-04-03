@@ -13,10 +13,17 @@ document.querySelector(".btn-go-shopify").addEventListener("click", function(eve
 		overlay('who-are-you', function(){
 			overlay('loading');
 			getProductDataFromPage(function(productData){
+
+				num_products = Object.keys(productData).length;
+				last_page = Math.ceil(num_products / 15.0);
+				current_page = 1;
+
 				overlay('loading', function(){
 					displayProductCards(1, productData);
 					overlay('product-cards-info');
 					overlay('product-cards');
+					updateCurrentPage();
+					overlay('page-nav');
 				});
 			});
 		});
@@ -31,8 +38,6 @@ document.querySelector('#variant-id').addEventListener('change', function(){
 	active_variant_id = this.value;
 	active_variant_title = this.options[this.selectedIndex].innerHTML;
 	document.getElementById('variant-title-display').innerHTML = active_variant_title;
-	overlayHide('subscription-details', function(){
-		document.getElementById('select-variant').style.display = 'block';
-	});
+	backToStep2();
 
 });

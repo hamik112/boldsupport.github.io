@@ -7,8 +7,16 @@ body{
   display:none;
 }
 
-.content.loading, .content.product-cards, .content.product-cards-info, .card-section.subscription-details, .card-section.variant-select, .card-section.terms, .card-section.get-codes{
+.content.loading, .content.page-nav, .content.product-cards, .content.product-cards-info, .card-section.subscription-details, .card-section.variant-select, .card-section.terms, .card-section.get-codes{
   display:none;
+}
+
+.nav.pagination{
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 102px !important;
+    margin-top: 15px !important;
+    margin-bottom:10px !important;
 }
 
 .logo-top{
@@ -16,6 +24,16 @@ body{
   right: 0;
   border-radius: 3px;
   box-shadow: 3px 3px 2px #ccc;
+}
+
+.order-details{
+    width: 100%;
+    font-size: 18px;
+}
+
+.select-field.inline{
+    display: inline-block !important;
+    width: auto !important;
 }
 
 .overlay {
